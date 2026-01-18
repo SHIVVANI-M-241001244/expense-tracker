@@ -7,22 +7,10 @@ const TransactionSchema = new mongoose.Schema(
       ref: "User",
       required: true
     },
-    amount: {
-      type: Number,
-      required: true
-    },
-    type: {
-      type: String,
-      enum: ["income", "expense"],
-      required: true
-    },
-    category: {
-      type: String,
-      required: true
-    },
-    note: {
-      type: String
-    }
+    amount: Number,
+    type: String,
+    category: String,
+    note: String
   },
   { timestamps: true }
 );

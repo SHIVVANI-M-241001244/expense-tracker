@@ -2,52 +2,43 @@ const express = require("express");
 const router = express.Router();
 const Transaction = require("../models/Transaction");
 
-// GET transactions by userId
-router.get("/:userId", async (req, res) => {
-  try {
-    const transactions = await Transaction.find({
-      userId: req.params.userId,
-    }).sort({ createdAt: -1 });
-
-    res.json(transactions);
-  } catch (err) {
-
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// ADD transaction
+/* =========================
+   ADD TRANSACTION
+========================= */
 router.post("/add", async (req, res) => {
   try {
     const transaction = new Transaction(req.body);
     await transaction.save();
-    res.status(201).json(transaction);
+    res.json(transaction);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json(err);
   }
 });
 
-// DELETE transaction
+/* =========================
+   GET USER TRANSACTIONS
+========================= */
+router.get("/:userId", async (req, res) => {
+  try {
+    const transactions = await Transaction.find({
+      userId: req.params.userId
+    }).sort({ createdAt: -1 });
+
+    res.json(transactions);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+/* =========================
+   DELETE TRANSACTION ✅
+========================= */
 router.delete("/:id", async (req, res) => {
   try {
     await Transaction.findByIdAndDelete(req.params.id);
-    res.json({ success: true });
+    res.json({ message: "Transaction deleted" });
   } catch (err) {
-    res.status(500).json({ message: "Delete failed" });
-  }
-});
-
-// UPDATE transaction
-router.put("/:id", async (req, res) => {
-  try {
-    const updated = await Transaction.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    res.json(updated);
-  } catch (err) {
-    res.status(500).json({ message: "Update failed" });
+    res.status(500).json(err);
   }
 });
 
