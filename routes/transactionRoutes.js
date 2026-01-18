@@ -2,43 +2,48 @@ const express = require("express");
 const router = express.Router();
 const Transaction = require("../models/Transaction");
 
-/* =========================
-   ADD TRANSACTION
-========================= */
-router.post("/add", async (req, res) => {
-  try {
-    const transaction = new Transaction(req.body);
-    await transaction.save();
-    res.json(transaction);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-/* =========================
-   GET USER TRANSACTIONS
-========================= */
+/* GET transactions by user */
 router.get("/:userId", async (req, res) => {
   try {
-    const transactions = await Transaction.find({
-      userId: req.params.userId
-    }).sort({ createdAt: -1 });
-
-    res.json(transactions);
+    const txns = await Transaction.find({ userId: req.params.userId }).sort({ date: -1 });
+    res.json(txns);
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ error: err.message });
   }
 });
 
-/* =========================
-   DELETE TRANSACTION ✅
-========================= */
+/* ADD transaction */
+router.post("/add", async (req, res) => {
+  try {
+    const txn = new Transaction(req.body);
+    await txn.save();
+    res.json(txn);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/* DELETE transaction */
 router.delete("/:id", async (req, res) => {
   try {
     await Transaction.findByIdAndDelete(req.params.id);
     res.json({ message: "Transaction deleted" });
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/* UPDATE transaction */
+router.put("/:id", async (req, res) => {
+  try {
+    const updated = await Transaction.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
