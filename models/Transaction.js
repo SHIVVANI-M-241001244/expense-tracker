@@ -7,28 +7,19 @@ const TransactionSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-
-    type: {
-      type: String,
-      enum: ["income", "expense"],
-      required: true,
-    },
-
     category: {
       type: String,
       required: true,
     },
-
     amount: {
       type: Number,
       required: true,
     },
-
-    date: {
-      type: Date,
-      default: Date.now,
+    type: {
+      type: String, // income / expense
+      enum: ["income", "expense"],
+      required: true,
     },
-
     note: {
       type: String,
     },
